@@ -1,9 +1,12 @@
+using Foodie.Business.Authorization.Handlers;
+using Foodie.Business.Authorization.Requirements;
 using Foodie.Business.Repositories.Implementations;
 using Foodie.Business.Repositories.Interfaces;
 using Foodie.Business.Services.Implementations;
 using Foodie.Business.Services.Interfaces;
 using Foodie.Data.Persistance;
 using Foodie.Data.Seed;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol.Core.Types;
@@ -25,6 +28,12 @@ builder.Services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddTransient<IRestaurantService, RestaurantService>();
 builder.Services.AddTransient<IImageService, ImageService>();
 builder.Services.AddTransient<IMenuService, MenuService>();
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("RestaurantAccessPolicy", policy =>
+    {
+        policy.Requirements.Add(new RestaurantManagementAccessRequirement());
+    });
+builder.Services.AddScoped<IAuthorizationHandler, RestaurantManagementAccessHandler>();
 
 var app = builder.Build();
 // Seed data

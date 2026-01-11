@@ -20,12 +20,14 @@ namespace Foodie.Web.Controllers
         private readonly IRestaurantService _restaurantService;
         private readonly IMapper _mapper;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IAuthorizationService _authorizationService;
 
-        public RestaurantsController(IRestaurantService restaurantService, IMapper mapper, UserManager<IdentityUser> userManager)
+        public RestaurantsController(IRestaurantService restaurantService, IMapper mapper, UserManager<IdentityUser> userManager, IAuthorizationService authorizationSevice)
         {
             _restaurantService = restaurantService;
             _mapper = mapper;
             _userManager = userManager;
+            _authorizationService = authorizationSevice;
         }
 
         // GET: Restaurants
@@ -87,6 +89,12 @@ namespace Foodie.Web.Controllers
                 return NotFound();
             }
 
+            AuthorizationResult authResult = await _authorizationService.AuthorizeAsync(User, id, "RestaurantAccessPolicy");
+            if (!authResult.Succeeded)
+            {
+                return Forbid();
+            }
+
             var restaurant = await _restaurantService.GetByIdAsync(id.Value);
             if (restaurant == null)
             {
@@ -109,6 +117,12 @@ namespace Foodie.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, RestaurantCreateOrEditViewModel restaurant)
         {
+            AuthorizationResult authResult = await _authorizationService.AuthorizeAsync(User, id, "RestaurantAccessPolicy");
+            if (!authResult.Succeeded)
+            {
+                return Forbid();
+            }
+
             if (ModelState.IsValid)
             {
                 var existing = await _restaurantService.GetByIdAsync(id);
@@ -147,6 +161,12 @@ namespace Foodie.Web.Controllers
                 return NotFound();
             }
 
+            AuthorizationResult authResult = await _authorizationService.AuthorizeAsync(User, id, "RestaurantAccessPolicy");
+            if (!authResult.Succeeded)
+            {
+                return Forbid();
+            }
+
             var restaurant = await _restaurantService.GetByIdAsync(id.Value);
             if (restaurant == null)
             {
@@ -162,6 +182,12 @@ namespace Foodie.Web.Controllers
         [Authorize(Roles = "Admin,RestaurantOwner")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
+            AuthorizationResult authResult = await _authorizationService.AuthorizeAsync(User, id, "RestaurantAccessPolicy");
+            if (!authResult.Succeeded)
+            {
+                return Forbid();
+            }
+
             var restaurant = await _restaurantService.GetByIdAsync(id);
             if (restaurant != null)
             {
