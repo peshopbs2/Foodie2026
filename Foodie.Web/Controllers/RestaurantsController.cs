@@ -12,6 +12,7 @@ using Foodie.Models.ViewModels.Restaurants;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace Foodie.Web.Controllers
 {
@@ -34,6 +35,12 @@ namespace Foodie.Web.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _restaurantService.GetAllAsync());
+        }
+
+        [Authorize(Roles ="Admin,RestaurantOwner")]
+        public async Task<IActionResult> Manage()
+        {
+            return View(await _restaurantService.GetByOwnerIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)));
         }
 
         // GET: Restaurants/Details/5

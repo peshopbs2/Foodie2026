@@ -28,8 +28,19 @@ namespace Foodie.Business.Services.Implementations
         }
 
         public async Task<IEnumerable<RestaurantViewModel>> GetAllAsync()
-        {  
+        {
             var restaurants = await _restaurantRepository.GetAllAsync(r => r.Images, r => r.Owners);
+            return _mapper.Map<IEnumerable<RestaurantViewModel>>(restaurants);
+        }
+
+        public async Task<IEnumerable<RestaurantViewModel>> GetByOwnerIdAsync(string ownerId)
+        {
+            var restaurants = await _restaurantRepository.Query()
+                .Where(r => r.Owners.Any(o => o.UserId == ownerId))
+                .Include(r => r.Images)
+                .Include(r => r.Owners)
+                    .ThenInclude(o => o.User)
+                .ToListAsync();
             return _mapper.Map<IEnumerable<RestaurantViewModel>>(restaurants);
         }
 

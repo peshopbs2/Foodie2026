@@ -28,6 +28,13 @@ namespace Foodie.Business.Services.Interfaces
         Task<RestaurantViewModel?> GetByIdAsync(Guid id);
 
         /// <summary>
+        /// Retrieves all available restaurants owned by given owner
+        /// </summary>
+        /// <param name="ownerId">ID of the restaurant owner</param>
+        /// <returns>A collection of <see cref="RestaurantViewModel"/> objects.</returns>
+        Task<IEnumerable<RestaurantViewModel>> GetByOwnerIdAsync(string ownerId);
+
+        /// <summary>
         /// Searches for restaurants that match a specific address or location string.
         /// </summary>
         /// <param name="address">The address or partial address to search for.</param>
