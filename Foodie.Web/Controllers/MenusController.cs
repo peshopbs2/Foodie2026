@@ -25,6 +25,23 @@ namespace Foodie.Web.Controllers
             return View(menus);
         }
 
+        [HttpGet("Menus/Restaurant/{restaurantId:guid}")]
+        public async Task<IActionResult> Restaurant(Guid restaurantId)
+        {
+            var restaurant = await _restaurantService.GetByIdAsync(restaurantId);
+            if (restaurant == null) {
+                return NotFound();
+            }
+
+            var menus = await _menuService.GetByRestaurantIdAsync(restaurantId);
+            var model = new ListMenusByRestaurantIdViewModel()
+            {
+                Menus = menus,
+                RestaurantName = restaurant.Name
+            };
+            return View(model);
+        }
+
         public async Task<IActionResult> Details(Guid id)
         {
             var menu = await _menuService.GetByIdAsync(id);
