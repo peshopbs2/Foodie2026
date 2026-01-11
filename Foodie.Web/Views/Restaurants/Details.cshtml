@@ -1,0 +1,97 @@
+﻿@model Foodie.Models.ViewModels.Restaurants.RestaurantViewModel
+
+@{
+    ViewData["Title"] = "Details";
+
+    var mainImage = Model.Images.FirstOrDefault(x => x.IsMainImage) ?? Model.Images.FirstOrDefault();
+
+    var galleryImages = Model.Images.Where(x => x.Id != mainImage?.Id).ToList();
+}
+
+<div class="container mt-4">
+    <h1>@Model.Name</h1>
+    <hr />
+
+    <div class="row mb-5">
+        <div class="col-md-6 mb-4 mb-md-0">
+            @if (mainImage != null)
+            {
+                <div class="card shadow-lg border-0 rounded overflow-hidden">
+                    <img src="@mainImage.ImagePath"
+                         class="img-fluid w-100"
+                         style="height: 400px; object-fit: cover;"
+                         alt="@Model.Name Main Image">
+                </div>
+            }
+            else
+            {
+                <div class="bg-secondary text-white d-flex align-items-center justify-content-center rounded shadow-sm" style="height: 400px;">
+                    <span class="h3">No Image Available</span>
+                </div>
+            }
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-0 bg-light h-100">
+                <div class="card-body">
+                    <h4 class="card-title text-primary mb-4">Restaurant Info</h4>
+
+                    <dl class="row">
+                        <dt class="col-sm-4 text-muted">
+                            @Html.DisplayNameFor(model => model.Name)
+                        </dt>
+                        <dd class="col-sm-8 fw-bold">
+                            @Html.DisplayFor(model => model.Name)
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">
+                            @Html.DisplayNameFor(model => model.Address)
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.Address)
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">
+                            @Html.DisplayNameFor(model => model.Phone)
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.Phone)
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">
+                            @Html.DisplayNameFor(model => model.Capacity)
+                        </dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-info text-dark">@Model.Capacity seats</span>
+                        </dd>
+                    </dl>
+
+                    <div class="mt-4">
+                        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary px-4">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                        <a asp-action="Index" class="btn btn-outline-secondary px-4">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (galleryImages.Any())
+    {
+        <h3 class="mb-3 text-secondary">Gallery</h3>
+        <div class="row g-3">
+            @foreach (var img in galleryImages)
+            {
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 shadow-sm border-0">
+                        <img src="@img.ImagePath"
+                             class="card-img-top rounded"
+                             style="height: 200px; object-fit: cover;"
+                             alt="Gallery Image">
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

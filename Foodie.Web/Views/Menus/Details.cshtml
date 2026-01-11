@@ -1,0 +1,77 @@
+﻿@model Foodie.Models.ViewModels.Menus.MenuViewModel
+
+@{
+    ViewData["Title"] = "Menu Details";
+}
+
+<h1>Menu Details</h1>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Id</dt>
+            <dd class="col-sm-9">@Model.Id</dd>
+
+            <dt class="col-sm-3">Name</dt>
+            <dd class="col-sm-9">@Model.Name</dd>
+
+            <dt class="col-sm-3">Active From</dt>
+            <dd class="col-sm-9">@Model.ActiveFrom.ToString("yyyy-MM-dd")</dd>
+
+            <dt class="col-sm-3">Active To</dt>
+            <dd class="col-sm-9">@(Model.ActiveTo.HasValue ? Model.ActiveTo.Value.ToString("yyyy-MM-dd") : "-")</dd>
+
+            <dt class="col-sm-3">Restaurant</dt>
+            <dd class="col-sm-9">@Model.RestaurantName</dd>
+        </dl>
+    </div>
+</div>
+<div class="mt-3">
+@foreach (var category in @Model.Categories)
+{
+    <h3 class="mb-3 text-secondary border-bottom pb-2">@category.Name</h3>
+    <div class="row g-3 mb-5">
+        @foreach (var item in category.Items)
+        {
+            var opacityClass = item.IsAvailable ? "" : "opacity-75 bg-light";
+
+            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="card h-100 shadow-sm border-0 @opacityClass">
+
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title fw-bold text-dark mb-0">@item.Name</h5>
+                            <span class="badge bg-primary rounded-pill">@item.Price.ToString("C")</span>
+                        </div>
+
+                        <p class="card-text text-muted small flex-grow-1">
+                            @(string.IsNullOrEmpty(item.Description) ? "Няма описание" : item.Description)
+                        </p>
+
+                        <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
+                            @if (item.IsAvailable)
+                            {
+                                <small class="text-success fw-bold">
+                                    <i class="bi bi-check-circle-fill"></i> Налично
+                                </small>
+                                <button class="btn btn-sm btn-outline-primary rounded-circle">
+                                    <i class="bi bi-plus-lg">+</i>
+                                </button>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger w-100">Изчерпано</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+</div>
+
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</div>

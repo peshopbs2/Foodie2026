@@ -1,0 +1,44 @@
+﻿@model Foodie.Models.ViewModels.Menus.MenuCreateOrEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Menu";
+}
+
+<h1>Edit Menu</h1>
+
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="RestaurantId" class="form-label"></label>
+        <select asp-for="RestaurantId" class="form-select" asp-items="ViewBag.Restaurants">
+            <option value="">-- Select restaurant --</option>
+        </select>
+        <span asp-validation-for="RestaurantId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ActiveFrom" class="form-label"></label>
+        <input asp-for="ActiveFrom" class="form-control" type="date" />
+        <span asp-validation-for="ActiveFrom" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ActiveTo" class="form-label"></label>
+        <input asp-for="ActiveTo" class="form-control" type="date" />
+        <span asp-validation-for="ActiveTo" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-warning">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>
+
+@section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+}

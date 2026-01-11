@@ -1,0 +1,112 @@
+﻿@model Foodie.Models.ViewModels.Restaurants.RestaurantCreateOrEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Restaurant";
+}
+
+<h1>Edit Restaurant</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Phone" class="control-label"></label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Capacity" class="control-label"></label>
+                <input asp-for="Capacity" class="form-control" />
+                <span asp-validation-for="Capacity" class="text-danger"></span>
+            </div>
+
+            <div class="card mb-3 border-primary">
+                <div class="card-header text-primary">
+                    Upload New Images
+                </div>
+                <div class="card-body">
+                    <div class="form-group mb-3">
+                        <label asp-for="Images" class="form-label"></label>
+                        <input asp-for="Images" class="form-control" type="file" multiple accept="image/*" />
+                        <span asp-validation-for="Images" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="MainImageIndex" class="form-label">Set Main Image Index (for new uploads)</label>
+                        <input asp-for="MainImageIndex" class="form-control" type="number" min="0" value="0" />
+                        <small class="text-muted">Affects only the new batch of uploads.</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="SelectedOwnerIds" class="control-label">Assign Owners</label>
+                <select asp-for="SelectedOwnerIds" asp-items="Model.AvailableOwners" class="form-select" multiple aria-label="Select owners">
+                </select>
+                <small class="text-muted">Hold Ctrl (Windows) or Command (Mac) to select multiple owners.</small>
+                <span asp-validation-for="SelectedOwnerIds" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save Changes" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <h4>Current Gallery</h4>
+
+        @if (Model.ExistingImages != null && Model.ExistingImages.Any())
+        {
+            <div class="row">
+                @foreach (var image in Model.ExistingImages)
+                {
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 @(image.IsMainImage ? "border-success" : "")">
+                            <img src="@image.ImagePath" class="card-img-top" alt="Restaurant Image" style="object-fit: cover; height: 150px;">
+                            <div class="card-body p-2 text-center">
+                                @if (image.IsMainImage)
+                                {
+                                    <span class="badge bg-success w-100">Main Cover</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary w-100">Gallery Image</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                No images uploaded for this restaurant yet.
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
